@@ -1,7 +1,7 @@
 package co.uk.marcin.kulik.spring.boot.rest.demo.service;
 
 import co.uk.marcin.kulik.spring.boot.rest.demo.dto.TaskRepository;
-import co.uk.marcin.kulik.spring.boot.rest.demo.dto.ToDoListRepository;
+import co.uk.marcin.kulik.spring.boot.rest.demo.dto.ToDoRepository;
 import co.uk.marcin.kulik.spring.boot.rest.demo.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class TaskService {
     TaskRepository taskRepository;
 
     @Autowired
-    ToDoListRepository toDoListRepository;
+    ToDoRepository toDoRepository;
 
     public Optional<Task> findById(Long toDoListId) {
 
@@ -34,12 +34,12 @@ public class TaskService {
 
     public List<Task> findAllInList(Long toDoListId){
 
-       return toDoListRepository.findById(toDoListId).get().getListOfTasks();
+       return toDoRepository.findById(toDoListId).get().getListOfTasks();
     }
 
     public Task createTask(Long toDoListId, Task task){
 
-        task.setToDoList(toDoListRepository.findById(toDoListId).get());
+        task.setToDo(toDoRepository.findById(toDoListId).get());
         taskRepository.save(task);
         return task;
     }

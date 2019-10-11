@@ -18,7 +18,7 @@ import java.util.List;
 
 @Entity
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
-public class ToDoList {
+public class ToDo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class ToDoList {
     @NotEmpty
     private String description;
 
-    @OneToMany(mappedBy = "toDoList")
+    @OneToMany(mappedBy = "toDo")
     private List<Task> listOfTasks;
 
     @CreationTimestamp

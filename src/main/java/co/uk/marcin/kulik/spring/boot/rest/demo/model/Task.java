@@ -32,7 +32,7 @@ public class Task {
 
         @ManyToOne
         @JsonIgnore
-        private ToDoList toDoList;
+        private ToDo toDo;
 
         @CreationTimestamp
         private Date createdAt;
