@@ -19,7 +19,7 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @RequestMapping("/api")
-public class ToDoListController {
+public class ToDoController {
 
     @Autowired
     private ToDoService toDoService;

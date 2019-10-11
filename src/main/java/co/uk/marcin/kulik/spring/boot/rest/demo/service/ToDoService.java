@@ -1,6 +1,6 @@
 package co.uk.marcin.kulik.spring.boot.rest.demo.service;
 
-import co.uk.marcin.kulik.spring.boot.rest.demo.dto.ToDoRepository;
+import co.uk.marcin.kulik.spring.boot.rest.demo.repository.ToDoRepository;
 import co.uk.marcin.kulik.spring.boot.rest.demo.model.ToDo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
