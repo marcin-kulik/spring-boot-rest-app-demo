@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.List;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class ToDoControllerTest {
 
-    private final String URL = "/api/todo";
+    private final String URL = "/api/todos";
 
     @Autowired
     private MockMvc mockMvc;
@@ -51,11 +51,11 @@ public class ToDoControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].name", is(toDo1.getName())))
-                .andExpect(jsonPath("$[1].name", is(toDo1.getName())))
-                .andExpect(jsonPath("$[2].name", is(toDo1.getName())))
-                .andExpect(jsonPath("$[0].description", is(toDo2.getDescription())))
+                .andExpect(jsonPath("$[1].name", is(toDo2.getName())))
+                .andExpect(jsonPath("$[2].name", is(toDo3.getName())))
+                .andExpect(jsonPath("$[0].description", is(toDo1.getDescription())))
                 .andExpect(jsonPath("$[1].description", is(toDo2.getDescription())))
-                .andExpect(jsonPath("$[2].description", is(toDo2.getDescription())));
+                .andExpect(jsonPath("$[2].description", is(toDo3.getDescription())));
     }
 
 }
