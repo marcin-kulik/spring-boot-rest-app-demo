@@ -1,8 +1,9 @@
-package co.uk.marcin.kulik.spring.boot.rest.demo.controller;
+package rest.demo.controller;
 
-import co.uk.marcin.kulik.spring.boot.rest.demo.model.Task;
-import co.uk.marcin.kulik.spring.boot.rest.demo.service.TaskService;
-import co.uk.marcin.kulik.spring.boot.rest.demo.service.ToDoService;
+import rest.demo.model.Task;
+import rest.demo.repository.TaskRepository;
+import rest.demo.repository.ToDoRepository;
+import rest.demo.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,17 +23,20 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    private ToDoService toDoService;
+    private ToDoRepository toDoRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Autowired
     private TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
+    public ResponseEntity<List<Task>> getAll() {
 
-        if (!taskService.findAll().isEmpty()) {
-            log.info("Showing all tasks : {}", toDoService.findAllToDos());
-            return new ResponseEntity(taskService.findAll(), HttpStatus.ACCEPTED);
+        if (!taskRepository.findAll().isEmpty()) {
+            log.info("Showing all tasks : {}", toDoRepository.findAll());
+            return new ResponseEntity(taskRepository.findAll(), HttpStatus.ACCEPTED);
         } else {
             log.info("There are no tasks.");
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -40,11 +44,11 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long taskId) {
+    public ResponseEntity<Task> getById(@PathVariable Long taskId) {
 
-        if (!taskService.findById(taskId).isEmpty()) {
-            log.info("Showing task : {}", taskService.findById(taskId));
-            return new ResponseEntity(taskService.findAll(), HttpStatus.ACCEPTED);
+        if (!taskRepository.findById(taskId).isEmpty()) {
+            log.info("Showing task : {}", taskRepository.findById(taskId));
+            return new ResponseEntity(taskRepository.findAll(), HttpStatus.ACCEPTED);
         } else {
             log.info("Requested task does not exist.");
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -52,10 +56,10 @@ public class TaskController {
     }
 
     @GetMapping("/todolist/{toDoListId}")
-    public ResponseEntity<List<Task>> getTasksInAList(@PathVariable("toDoListId") Long toDoListId) {
+    public ResponseEntity<List<Task>> getAllInToDo(@PathVariable("toDoListId") Long toDoListId) {
 
-        if (toDoService.findToDoById(toDoListId).isPresent()) {
-            log.info("List found : {}", toDoService.findToDoById(toDoListId));
+        if (toDoRepository.findById(toDoListId).isPresent()) {
+            log.info("List found : {}", toDoRepository.findById(toDoListId));
             return new ResponseEntity(taskService.findAllInList(toDoListId), HttpStatus.ACCEPTED);
         }
         else{
@@ -65,10 +69,10 @@ public class TaskController {
     }
 
     @PostMapping("/todolist/{toDoListId}")
-    public ResponseEntity<Task> createTaskInList(@Valid @RequestBody Task task,
+    public ResponseEntity<Task> postInToDo(@Valid @RequestBody Task task,
                                                  @PathVariable("toDoListId") Long toDoListId) {
 
-        if (toDoService.findToDoById(toDoListId).isPresent()) {
+        if (toDoRepository.findById(toDoListId).isPresent()) {
             log.info("List found and task :{} has been added.", task);
             return new ResponseEntity(taskService.createTask(toDoListId, task), HttpStatus.CREATED);
         }

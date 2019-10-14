@@ -1,4 +1,4 @@
-package co.uk.marcin.kulik.spring.boot.rest.demo;
+package rest.demo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

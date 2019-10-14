@@ -1,6 +1,6 @@
-package co.uk.marcin.kulik.spring.boot.rest.demo.repository;
+package rest.demo.repository;
 
-import co.uk.marcin.kulik.spring.boot.rest.demo.model.ToDo;
+import rest.demo.model.ToDo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

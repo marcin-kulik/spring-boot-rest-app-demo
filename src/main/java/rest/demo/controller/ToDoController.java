@@ -1,12 +1,12 @@
-package co.uk.marcin.kulik.spring.boot.rest.demo.controller;
+package rest.demo.controller;
 
-import co.uk.marcin.kulik.spring.boot.rest.demo.model.ToDo;
-import co.uk.marcin.kulik.spring.boot.rest.demo.service.ToDoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rest.demo.model.ToDo;
+import rest.demo.repository.ToDoRepository;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,15 +22,15 @@ import java.util.Optional;
 public class ToDoController {
 
     @Autowired
-    private ToDoService toDoService;
+    private ToDoRepository toDoRepository;
 
     @GetMapping("/todos")
     public ResponseEntity<List<ToDo>> getAll() {
 
-        if (!toDoService.findAllToDos().isEmpty()) {
-            List<ToDo> todoLIst = toDoService.findAllToDos();
-            log.info("Showing all To Do Lists : {}", todoLIst);
-            return new ResponseEntity(todoLIst, HttpStatus.ACCEPTED);
+        if (!toDoRepository.findAll().isEmpty()) {
+            List<ToDo> toDoList = toDoRepository.findAll();
+            log.info("Showing all To Do Lists : {}", toDoList);
+            return new ResponseEntity(toDoList, HttpStatus.ACCEPTED);
         } else {
             log.info("There are no To Do Lists.");
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -41,8 +41,7 @@ public class ToDoController {
     @RequestMapping("/todos/{id}")
     public ResponseEntity<ToDo> get(@PathVariable Long id) {
 
-        Optional<ToDo> maybeTodo = toDoService.findToDoById(id);
-        ToDo todo = maybeTodo.get();
+        Optional<ToDo> maybeTodo = toDoRepository.findById(id);
 
         if (maybeTodo.isPresent()) {
             log.info("Showing list : {}", maybeTodo.get());
@@ -56,6 +55,6 @@ public class ToDoController {
     @PostMapping("/todos")
     public ResponseEntity<ToDo> post(@Valid @RequestBody List<ToDo> toDoList) {
         log.info("Creating ToDo List : {}", toDoList);
-        return new ResponseEntity(toDoService.saveToDos(toDoList), HttpStatus.CREATED);
+        return new ResponseEntity(toDoRepository.saveAll(toDoList), HttpStatus.CREATED);
     }
 }

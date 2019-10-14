@@ -1,4 +1,4 @@
-package co.uk.marcin.kulik.spring.boot.rest.demo.model;
+package rest.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
