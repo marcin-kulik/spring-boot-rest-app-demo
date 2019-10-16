@@ -53,7 +53,7 @@ public class ToDoController {
     }
 
     @PostMapping("/todos")
-    public ResponseEntity<ToDo> post(@Valid @RequestBody List<ToDo> toDoList) {
+    public ResponseEntity<List<ToDo>> post(@Valid @RequestBody List<ToDo> toDoList) {
         log.info("Creating ToDo List : {}", toDoList);
         return new ResponseEntity(toDoRepository.saveAll(toDoList), HttpStatus.CREATED);
     }
