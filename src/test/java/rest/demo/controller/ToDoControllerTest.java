@@ -20,6 +20,7 @@ package rest.demo.controller;
         import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Given user wants to call on ToDo Controller")
 public class ToDoControllerTest {
 
     @Mock
@@ -28,22 +29,22 @@ public class ToDoControllerTest {
     @InjectMocks
     private ToDoController toDoController;
 
-    ToDo list1, list2, list3;
-    List<ToDo> allLists;
+    ToDo toDo1, toDo2, toDo3;
+    List<ToDo> toDos;
 
     @Before
     public void setup() {
-        list1 = new ToDo().builder().name("List 1").description("List 1 description").build();
-        list2 = new ToDo().builder().name("List 2").description("List 2 description").build();
-        list3 = new ToDo().builder().name("List 3").description("List 3 description").build();
-        allLists = Arrays.asList(list1, list2, list3);
+        toDo1 = new ToDo().builder().name("List 1").description("List 1 description").build();
+        toDo2 = new ToDo().builder().name("List 2").description("List 2 description").build();
+        toDo3 = new ToDo().builder().name("List 3").description("List 3 description").build();
+        toDos = Arrays.asList(toDo1, toDo2, toDo3);
     }
 
     @Test
     @DisplayName("when a ToDo list is in repository, then we get ACCEPTED")
     void getAll_Accepted() {
-        ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity(allLists, HttpStatus.ACCEPTED);
-        when(toDoService.findAll()).thenReturn(allLists);
+        ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity(toDos, HttpStatus.ACCEPTED);
+        when(toDoService.findAll()).thenReturn(toDos);
         ResponseEntity<List<ToDo>> actualResponse = toDoController.getAll();
         assertEquals(actualResponse, expectedResponse);
     }
@@ -62,10 +63,9 @@ public class ToDoControllerTest {
     @DisplayName("when a correct id is passed, then we get ACCEPTED")
     void get_CorrectId() {
         Long id = 1L;
-        ToDo toDo = new ToDo().builder().name("ToDo 1").description("ToDo 1 description").build();
-        toDo.setId(id);
-        ResponseEntity<ToDo> expectedResponse = new ResponseEntity(toDo, HttpStatus.ACCEPTED);
-        when(toDoService.findById(id)).thenReturn(Optional.of(toDo));
+        toDo1.setId(id);
+        ResponseEntity<ToDo> expectedResponse = new ResponseEntity(toDo1, HttpStatus.ACCEPTED);
+        when(toDoService.findById(id)).thenReturn(Optional.of(toDo1));
         ResponseEntity<ToDo> actualResponse = toDoController.get(id);
         assertEquals(actualResponse, expectedResponse);
     }
@@ -83,9 +83,9 @@ public class ToDoControllerTest {
     @Test
     @DisplayName("when a valid list is passed, then we get CREATED")
     void post() {
-        ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity(allLists, HttpStatus.CREATED);
-        when(toDoService.saveAll(allLists)).thenReturn(allLists);
-        ResponseEntity<List<ToDo>> actualResponse = toDoController.post(allLists);
+        ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity(toDos, HttpStatus.CREATED);
+        when(toDoService.saveAll(toDos)).thenReturn(toDos);
+        ResponseEntity<List<ToDo>> actualResponse = toDoController.post(toDos);
         assertEquals(actualResponse, expectedResponse);
     }
 }

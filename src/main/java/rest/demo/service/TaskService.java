@@ -22,7 +22,7 @@ public class TaskService {
     ToDoRepository toDoRepository;
 
     public List<Task> findAllInList(Long toDoListId){
-       return toDoRepository.findById(toDoListId).get().getListOfTasks();
+        return toDoRepository.findById(toDoListId).get().getListOfTasks();
     }
 
     public Task createTask(Long toDoListId, Task task){

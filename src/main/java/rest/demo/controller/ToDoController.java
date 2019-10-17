@@ -1,6 +1,5 @@
 package rest.demo.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import java.util.Optional;
  */
 
 @RestController
-@Slf4j
 @RequestMapping("/api")
 public class ToDoController {
 
@@ -27,34 +25,26 @@ public class ToDoController {
     @GetMapping("/todos")
     public ResponseEntity<List<ToDo>> getAll() {
 
-        if (!toDoRepository.findAll().isEmpty()) {
-            List<ToDo> toDoList = toDoRepository.findAll();
-            log.info("Showing all To Do Lists : {}", toDoList);
-            return new ResponseEntity(toDoList, HttpStatus.ACCEPTED);
-        } else {
-            log.info("There are no To Do Lists.");
+        if (!toDoRepository.findAll().isEmpty())
+            return new ResponseEntity(toDoRepository.findAll(), HttpStatus.ACCEPTED);
+        else
             return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
     }
 
-    @GetMapping
-    @RequestMapping("/todos/{id}")
+    @GetMapping("/todos/{id}")
     public ResponseEntity<ToDo> get(@PathVariable Long id) {
 
         Optional<ToDo> maybeTodo = toDoRepository.findById(id);
 
-        if (maybeTodo.isPresent()) {
-            log.info("Showing list : {}", maybeTodo.get());
+        if (maybeTodo.isPresent())
             return new ResponseEntity(maybeTodo.get(), HttpStatus.ACCEPTED);
-        } else {
-            log.info("This list does not exist.");
+        else
             return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
     }
 
     @PostMapping("/todos")
     public ResponseEntity<List<ToDo>> post(@Valid @RequestBody List<ToDo> toDoList) {
-        log.info("Creating ToDo List : {}", toDoList);
+
         return new ResponseEntity(toDoRepository.saveAll(toDoList), HttpStatus.CREATED);
     }
 }
