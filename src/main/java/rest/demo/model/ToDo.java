@@ -38,5 +38,4 @@ public class ToDo {
 
     @UpdateTimestamp
     private Date updatedAt;
-
 }

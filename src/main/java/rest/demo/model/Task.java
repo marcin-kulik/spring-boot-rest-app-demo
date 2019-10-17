@@ -39,5 +39,4 @@ public class Task {
 
         @UpdateTimestamp
         private Date updatedAt;
-
 }

@@ -1,13 +1,12 @@
 package rest.demo.service;
 
-import rest.demo.repository.TaskRepository;
-import rest.demo.repository.ToDoRepository;
-import rest.demo.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rest.demo.model.Task;
+import rest.demo.repository.TaskRepository;
+import rest.demo.repository.ToDoRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Marcin Kulik
