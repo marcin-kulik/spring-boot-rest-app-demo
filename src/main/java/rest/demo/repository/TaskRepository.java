@@ -1,7 +1,8 @@
 package rest.demo.repository;
 
-import rest.demo.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
+import rest.demo.model.Task;
+import rest.demo.model.ToDo;
 
 /**
  * @author Marcin Kulik

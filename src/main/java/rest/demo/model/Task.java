@@ -31,7 +31,6 @@ public class Task {
         private String description;
 
         @ManyToOne
-        @JsonIgnore
         private ToDo toDo;
 
         @CreationTimestamp
