@@ -17,7 +17,7 @@ import java.util.Date;
  */
 
 @Entity
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
+@Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class Task {
 
         @Id

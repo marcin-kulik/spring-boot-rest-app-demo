@@ -1,6 +1,7 @@
 package rest.demo.controller;
 
         import org.junit.Before;
+        import rest.demo.model.Task;
         import rest.demo.model.ToDo;
         import org.junit.jupiter.api.DisplayName;
         import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ package rest.demo.controller;
         import org.springframework.http.HttpStatus;
         import org.springframework.http.ResponseEntity;
         import rest.demo.repository.ToDoRepository;
+        import rest.demo.service.TaskService;
 
         import java.util.Arrays;
         import java.util.List;
@@ -24,7 +26,10 @@ package rest.demo.controller;
 public class ToDoControllerTest {
 
     @Mock
-    private ToDoRepository toDoService;
+    private ToDoRepository toDoRepository;
+
+    @Mock
+    private TaskService taskService;
 
     @InjectMocks
     private ToDoController toDoController;
@@ -41,51 +46,72 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("when a ToDo list is in repository, then we get ACCEPTED")
+    @DisplayName("when ToDos are in repository, then we get ACCEPTED")
     void getAll_Accepted() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity(toDos, HttpStatus.ACCEPTED);
-        when(toDoService.findAll()).thenReturn(toDos);
-        ResponseEntity<List<ToDo>> actualResponse = toDoController.getAll();
+        when(toDoRepository.findAll()).thenReturn(toDos);
+        ResponseEntity<List<ToDo>> actualResponse = toDoController.getToDos();
         assertEquals(actualResponse, expectedResponse);
     }
 
     @Test
-    @DisplayName("when a ToDo list does not exist in repository, then we get NOT_FOUND")
+    @DisplayName("when ToDos do not exist in repository, then we get NOT_FOUND")
     void getAll_NotFound() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity(HttpStatus.NOT_FOUND);
         List<ToDo> emptyList = Arrays.asList();
-        when(toDoService.findAll()).thenReturn(emptyList);
-        ResponseEntity<List<ToDo>> actualResponse = toDoController.getAll();
+        when(toDoRepository.findAll()).thenReturn(emptyList);
+        ResponseEntity<List<ToDo>> actualResponse = toDoController.getToDos();
         assertEquals(actualResponse, expectedResponse);
     }
 
     @Test
-    @DisplayName("when a correct id is passed, then we get ACCEPTED")
+    @DisplayName("when a correct ToDo id is passed, then we get ACCEPTED")
     void get_CorrectId() {
         Long id = 1L;
         toDo1.setId(id);
         ResponseEntity<ToDo> expectedResponse = new ResponseEntity(toDo1, HttpStatus.ACCEPTED);
-        when(toDoService.findById(id)).thenReturn(Optional.of(toDo1));
+        when(toDoRepository.findById(id)).thenReturn(Optional.of(toDo1));
         ResponseEntity<ToDo> actualResponse = toDoController.get(id);
         assertEquals(actualResponse, expectedResponse);
     }
 
     @Test
-    @DisplayName("when a correct id is passed, then we get NOT_FOUND")
+    @DisplayName("when an incorrect ToDo id is passed, then we get NOT_FOUND")
     void get_IncorrectId() {
         Long id = 100L;
         ResponseEntity<ToDo> expectedResponse = new ResponseEntity(HttpStatus.NOT_FOUND);
-        when(toDoService.findById(id)).thenReturn(Optional.empty());
+        when(toDoRepository.findById(id)).thenReturn(Optional.empty());
         ResponseEntity<ToDo> actualResponse = toDoController.get(id);
         assertEquals(actualResponse, expectedResponse);
     }
 
     @Test
-    @DisplayName("when a valid list is passed, then we get CREATED")
+    @DisplayName("when a valid ToDo is passed, then we get CREATED")
     void post() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity(toDos, HttpStatus.CREATED);
-        when(toDoService.saveAll(toDos)).thenReturn(toDos);
+        when(toDoRepository.saveAll(toDos)).thenReturn(toDos);
         ResponseEntity<List<ToDo>> actualResponse = toDoController.post(toDos);
         assertEquals(actualResponse, expectedResponse);
+    }
+
+    //  TODO - failing test, to be fixed
+    @Test
+    @DisplayName("when a valid toDo is passed and it has tasks, then we get ACCEPTED")
+    void getToDos(){
+        toDo1.setId(1L);
+        Task task1 = new Task().builder().name("Task 1").description("Description 1").build();
+        Task task2 = new Task().builder().name("Task 2").description("Description 2").build();
+        Task task3 = new Task().builder().name("Task 3").description("Description 3").build();
+        List<Task> tasks = Arrays.asList(task1, task2, task3);
+        ResponseEntity<List<Task>> expectedResponse = new ResponseEntity(tasks, HttpStatus.CREATED);
+        when(taskService.findTasks(1L)).thenReturn(tasks);
+        ResponseEntity<List<Task>> actualResponse = toDoController.getToDos(1L);
+        assertEquals(actualResponse, expectedResponse);
+    }
+
+    @Test
+    @DisplayName("when a valid toDo and task are passed, then we get ACCEPTED")
+    void postTask(){
+        // TODO
     }
 }

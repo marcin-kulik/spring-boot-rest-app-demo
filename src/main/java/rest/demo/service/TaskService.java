@@ -21,12 +21,12 @@ public class TaskService {
     @Autowired
     ToDoRepository toDoRepository;
 
-    public List<Task> findAllInList(Long toDoListId){
-        return toDoRepository.findById(toDoListId).get().getListOfTasks();
+    public List<Task> findTasks(Long id){
+        return toDoRepository.findById(id).get().getListOfTasks();
     }
 
-    public Task createTask(Long toDoListId, Task task){
-        task.setToDo(toDoRepository.findById(toDoListId).get());
+    public Task create(Long id, Task task){
+        task.setToDo(toDoRepository.findById(id).get());
         taskRepository.save(task);
         return task;
     }
