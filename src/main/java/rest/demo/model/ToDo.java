@@ -31,7 +31,7 @@ public class ToDo {
     private String description;
 
     @OneToMany(mappedBy = "toDo", cascade = CascadeType.ALL)
-    private List<Task> listOfTasks;
+    private List<Task> tasks;
 
     @CreationTimestamp
     private Date createdAt;
