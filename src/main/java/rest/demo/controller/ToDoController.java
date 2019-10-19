@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rest.demo.model.ToDo;
-import rest.demo.repository.TaskRepository;
 import rest.demo.repository.ToDoRepository;
 
 import javax.validation.Valid;
@@ -22,9 +21,6 @@ public class ToDoController {
 
     @Autowired
     private ToDoRepository toDoRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
 
     @GetMapping
     public ResponseEntity<List<ToDo>> getToDos() {

@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import rest.demo.model.ToDo;
 import rest.demo.repository.ToDoRepository;
 
@@ -31,6 +32,7 @@ public class ToDoControllerTest {
     private ToDoController toDoController;
 
     private ToDo toDo1, toDo2, toDo3;
+    
     private List<ToDo> toDos;
 
     @Before
@@ -89,27 +91,5 @@ public class ToDoControllerTest {
         when(toDoRepository.saveAll(toDos)).thenReturn(toDos);
         ResponseEntity<List<ToDo>> actualResponse = toDoController.post(toDos);
         assertEquals(actualResponse, expectedResponse);
-    }
-
-    //  TODO - failing test, to be fixed
-//    @Test
-//    @DisplayName("when a valid toDo is passed and it has tasks, then we get ACCEPTED")
-//    void getTasks_la(){
-//        Long id = 1L;
-//        toDo1.setId(id);
-//        Task task1 = new Task().builder().name("Task 1").description("Description 1").build();
-//        Task task2 = new Task().builder().name("Task 2").description("Description 2").build();
-//        Task task3 = new Task().builder().name("Task 3").description("Description 3").build();
-//        List<Task> tasks = Arrays.asList(task1, task2, task3);
-//        ResponseEntity<List<Task>> expectedResponse = new ResponseEntity(tasks, HttpStatus.CREATED);
-//        when(taskService.findTasks(1L)).thenReturn(tasks);
-//        ResponseEntity<List<Task>> actualResponse = toDoController.getTasks(1L);
-//        assertEquals(actualResponse, expectedResponse);
-//    }
-
-    @Test
-    @DisplayName("when a valid toDo and task are passed, then we get ACCEPTED")
-    void postTask(){
-        // TODO
     }
 }
