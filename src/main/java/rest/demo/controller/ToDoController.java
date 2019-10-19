@@ -46,25 +46,5 @@ public class ToDoController {
     public ResponseEntity<List<ToDo>> post(@Valid @RequestBody List<ToDo> toDos) {
         return new ResponseEntity(toDoRepository.saveAll(toDos), HttpStatus.CREATED);
     }
-/*
-    @GetMapping("/{id}/tasks")
-    public ResponseEntity<List<Task>> getTasks(@PathVariable("id") Long id) {
-
-        if (toDoRepository.findById(id).isPresent())
-            return new ResponseEntity(taskService.findTasks(id), HttpStatus.ACCEPTED);
-        else
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }
-
-    @PostMapping("/{id}/tasks")
-    public ResponseEntity<Task> postTask(@Valid @RequestBody Task task,
-                                           @PathVariable("id") Long id) {
-
-        if (toDoRepository.findById(id).isPresent())
-            return new ResponseEntity(taskService.create(id, task), HttpStatus.CREATED);
-        else
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }*/
-
 
 }
