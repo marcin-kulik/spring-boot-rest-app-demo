@@ -1,4 +1,4 @@
-package co.uk.marcin.kulik.spring.boot.rest.demo.model;
+package rest.demo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Entity
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
-public class ToDoList {
+public class ToDo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,13 +30,12 @@ public class ToDoList {
     @NotEmpty
     private String description;
 
-    @OneToMany(mappedBy = "toDoList")
-    private List<Task> listOfTasks;
+    @OneToMany(mappedBy = "toDo", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
     @CreationTimestamp
     private Date createdAt;
 
     @UpdateTimestamp
     private Date updatedAt;
-
 }

@@ -1,4 +1,4 @@
-package co.uk.marcin.kulik.spring.boot.rest.demo.model;
+package rest.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Date;
  */
 
 @Entity
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
+@Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class Task {
 
         @Id
@@ -31,13 +31,11 @@ public class Task {
         private String description;
 
         @ManyToOne
-        @JsonIgnore
-        private ToDoList toDoList;
+        private ToDo toDo;
 
         @CreationTimestamp
         private Date createdAt;
 
         @UpdateTimestamp
         private Date updatedAt;
-
 }
