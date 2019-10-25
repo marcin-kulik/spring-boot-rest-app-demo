@@ -24,11 +24,10 @@ public class ToDoController {
 
     @GetMapping
     public ResponseEntity<List<ToDo>> getToDos() {
+        if(toDoRepository.findAll().size()==0)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(toDoRepository.findAll(), HttpStatus.ACCEPTED);
 
-        if (!toDoRepository.findAll().isEmpty())
-            return new ResponseEntity(toDoRepository.findAll(), HttpStatus.ACCEPTED);
-        else
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{id}")
@@ -37,14 +36,14 @@ public class ToDoController {
         Optional<ToDo> maybeTodo = toDoRepository.findById(id);
 
         if (maybeTodo.isPresent())
-            return new ResponseEntity(maybeTodo.get(), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(maybeTodo.get(), HttpStatus.ACCEPTED);
         else
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping
     public ResponseEntity<List<ToDo>> post(@Valid @RequestBody List<ToDo> toDos) {
-        return new ResponseEntity(toDoRepository.saveAll(toDos), HttpStatus.CREATED);
+        return new ResponseEntity<>(toDoRepository.saveAll(toDos), HttpStatus.CREATED);
     }
 
 }
