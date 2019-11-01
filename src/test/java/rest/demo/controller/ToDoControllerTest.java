@@ -1,6 +1,5 @@
 package rest.demo.controller;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,18 +9,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import rest.demo.model.Task;
 import rest.demo.model.ToDo;
 import rest.demo.repository.ToDoRepository;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Given user wants to call on ToDo Controller")
+@DisplayName("Given ToDoController is called")
 public class ToDoControllerTest {
 
     @Mock
@@ -33,8 +31,6 @@ public class ToDoControllerTest {
     private ToDo toDo1;
 
     private List<ToDo> toDos;
- //   TODO test tasks
-//    private List<Task> tasks;
 
     @BeforeEach
     public void setup() {
@@ -42,12 +38,10 @@ public class ToDoControllerTest {
         ToDo toDo2 = ToDo.builder().name("List 2").description("List 2 description").build();
         ToDo toDo3 = ToDo.builder().name("List 3").description("List 3 description").build();
         toDos = Arrays.asList(toDo1, toDo2, toDo3);
-//        task1 = new Task().builder().name("Task 1").description("Task 1 description").build();
-
     }
 
     @Test
-    @DisplayName("when ToDos are in repository, then we get ACCEPTED")
+    @DisplayName("when getting ToDos, then ACCEPTED")
     void getToDos_Accepted() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(toDos, HttpStatus.ACCEPTED);
         when(toDoRepository.findAll()).thenReturn(toDos);
@@ -56,41 +50,75 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("when ToDos do not exist in repository, then we get NOT_FOUND")
+    @DisplayName("when no ToDos, then NOT_FOUND")
     void getAll_NotFound() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<ToDo> emptyList = Arrays.asList();
+        List<ToDo> emptyList = Collections.emptyList();
         when(toDoRepository.findAll()).thenReturn(emptyList);
         ResponseEntity<List<ToDo>> actualResponse = toDoController.getToDos();
         assertEquals(expectedResponse, actualResponse);
     }
 
     @Test
-    @DisplayName("when a correct ToDo id is passed, then we get ACCEPTED")
-    void get_CorrectId() {
-        Long id = 1L;
-        toDo1 = ToDo.builder().name("List 1").description("List 1 description").build();
-        toDo1.setId(id);
-        ResponseEntity<ToDo> expectedResponse = new ResponseEntity(toDo1, HttpStatus.ACCEPTED);
-        when(toDoRepository.findById(id)).thenReturn(Optional.of(toDo1));
+    @DisplayName("when correct id, then ACCEPTED")
+    void get_withCorrectId() {
+        setToDo1IdTo_1L();
+        ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(toDo1, HttpStatus.ACCEPTED);
+        when(toDoRepository.findById(1L)).thenReturn(Optional.of(toDo1));
+        ResponseEntity<ToDo> actualResponse = toDoController.get(1L);
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    @DisplayName("when no tasks, then list empty")
+    void get_withCorrectId_andEmptyListOfTasks() {
+        setToDo1IdTo_1L();
+        List<Task> emptyList = Collections.emptyList();
+        toDo1.setTasks(emptyList);
+        when(toDoRepository.findById(1L)).thenReturn(Optional.of(toDo1));
+        ResponseEntity<ToDo> controllerResponse = toDoController.get(1L);
+        List<Task> actualList = Objects.requireNonNull(controllerResponse.getBody()).getTasks();
+        assertEquals(emptyList, actualList);
+    }
+
+    @Test
+    @DisplayName("when getting tasks, then list has tasks")
+    void get_withCorrectId_andListOfTasks() {
+        setToDo1IdTo_1L();
+        toDo1.setTasks(returnListOfTasks());
+        when(toDoRepository.findById(1L)).thenReturn(Optional.of(toDo1));
+        ResponseEntity<ToDo> controllerResponse = toDoController.get(1L);
+        List<Task> actualList = Objects.requireNonNull(controllerResponse.getBody()).getTasks();
+        assertEquals(returnListOfTasks(), actualList);
+    }
+
+    @Test
+    @DisplayName("when incorrect id, then NOT_FOUND")
+    void get_withIncorrectId() {
+        Long id = 100L;
+        ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        when(toDoRepository.findById(id)).thenReturn(Optional.empty());
         ResponseEntity<ToDo> actualResponse = toDoController.get(id);
         assertEquals(expectedResponse, actualResponse);
     }
 
     @Test
-    @DisplayName("when an incorrect ToDo id is passed, then we get NOT_FOUND")
-    void get_IncorrectId() {
-        Long id = 100L;
-        ResponseEntity<ToDo> expectedResponse = new ResponseEntity(HttpStatus.NOT_FOUND);
-        when(toDoRepository.findById(id)).thenReturn(Optional.empty());
-        ResponseEntity<ToDo> actualResponse = toDoController.get(id);
-        assertEquals(expectedResponse, actualResponse);    }
-
-    @Test
-    @DisplayName("when a valid ToDo is passed, then we get CREATED")
+    @DisplayName("when valid ToDo, then CREATED")
     void post() {
-        ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity(toDos, HttpStatus.CREATED);
+        ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(toDos, HttpStatus.CREATED);
         when(toDoRepository.saveAll(toDos)).thenReturn(toDos);
         ResponseEntity<List<ToDo>> actualResponse = toDoController.post(toDos);
-        assertEquals(expectedResponse, actualResponse);    }
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    private void setToDo1IdTo_1L() {
+        Long id = 1L;
+        toDo1.setId(id);
+    }
+
+    private List<Task> returnListOfTasks(){
+        Task task1 = Task.builder().name("Task 1").description("Task 1 description").build();
+        Task task2 = Task.builder().name("Task 2").description("Task 2 description").build();
+        return Arrays.asList(task1, task2);
+    }
 }
