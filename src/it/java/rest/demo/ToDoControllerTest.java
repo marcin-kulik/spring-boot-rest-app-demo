@@ -52,6 +52,8 @@ public class ToDoControllerTest {
                 .andExpect(jsonPath("$.[0].name").value("List 1"))
                 .andExpect(jsonPath("$.[1].name").value("List 2"))
                 .andExpect(jsonPath("$.[0].description").value("List 1 description"))
-                .andExpect(jsonPath("$.[1].description").value("List 2 description"));
+                .andExpect(jsonPath("$.[1].description").value("List 2 description"))
+                .andExpect(jsonPath("$.[0].tasks").doesNotExist())
+                .andExpect(jsonPath("$.[1].tasks").doesNotExist());
     }
 }
