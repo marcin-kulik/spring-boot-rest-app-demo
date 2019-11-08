@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DisplayName("Given ToDoController and mock ToDoRepository,")
+@DisplayName("Given ToDoController,")
 public class ToDoControllerTest {
 
     @Autowired
@@ -39,7 +39,7 @@ public class ToDoControllerTest {
 
         if (info.getDisplayName().equals("whenNoToDos_thenNotFound"))
             return;
-        
+
         toDo1 = ToDo.builder().name("List 1").description("List 1 description").build();
         ToDo toDo2 = ToDo.builder().name("List 2").description("List 2 description").build();
         toDos = Arrays.asList(toDo1, toDo2);
