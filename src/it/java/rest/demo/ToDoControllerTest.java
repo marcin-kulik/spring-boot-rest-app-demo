@@ -34,26 +34,6 @@ public class ToDoControllerTest {
     private ToDo toDo1;
     private List<ToDo> toDos;
 
-    @BeforeEach
-    public void saveToDosInRepository(TestInfo info) {
-
-        if (info.getDisplayName().equals("whenNoToDos_thenNotFound"))
-            return;
-
-        toDo1 = ToDo.builder().name("List 1").description("List 1 description").build();
-        ToDo toDo2 = ToDo.builder().name("List 2").description("List 2 description").build();
-        toDos = Arrays.asList(toDo1, toDo2);
-        toDoRepository.saveAll(toDos);
-    }
-
-    @AfterEach
-    public void deleteToDosFromRepository(TestInfo info) {
-
-        if (info.getDisplayName().equals("whenNoToDos_thenNotFound"))
-            return;
-        toDoRepository.deleteAll(toDos);
-    }
-
     @Test
     @DisplayName("When GET request and no ToDos, Then NOT_FOUND")
     void whenNoToDos_thenNotFound() throws Exception {
@@ -67,6 +47,8 @@ public class ToDoControllerTest {
     @DisplayName("When GET request and ToDos, Then ToDos returned")
     void whenToDos_thenSuccessfulAndReturnsToDos() throws Exception {
 
+        saveToDosInRepository();
+
         mockMvc.perform(get("/api/todos")
                 .contentType("application/json"))
                 .andExpect(status().is2xxSuccessful())
@@ -77,11 +59,15 @@ public class ToDoControllerTest {
                 .andExpect(jsonPath("$.[1].description").value("List 2 description"))
                 .andExpect(jsonPath("$.[0].tasks.length()").value(0))
                 .andExpect(jsonPath("$.[1].tasks.length()").value(0));
+
+        deleteToDosFromRepository();
     }
 
     @Test
     @DisplayName("When GET request and ToDos have tasks, Then ToDos with Tasks returned")
     void whenToDosHaveTasks_thenSuccessfulAndReturnsToDosWithTasks() throws Exception {
+
+        saveToDosInRepository();
 
         Task task1 = Task.builder().name("Task 1").description("Task 1 description").build();
         Task task2 = Task.builder().name("Task 2").description("Task 2 description").build();
@@ -98,6 +84,20 @@ public class ToDoControllerTest {
                 .andExpect(jsonPath("$.[1].description").value("List 2 description"))
                 .andExpect(jsonPath("$.[0].tasks.[0].name").value("Task 1"))
                 .andExpect(jsonPath("$.[0].tasks.[1].name").value("Task 2"));
+
+        deleteToDosFromRepository();
+    }
+
+    private void saveToDosInRepository() {
+        toDo1 = ToDo.builder().name("List 1").description("List 1 description").build();
+        ToDo toDo2 = ToDo.builder().name("List 2").description("List 2 description").build();
+        toDos = Arrays.asList(toDo1, toDo2);
+        toDoRepository.saveAll(toDos);
+    }
+
+
+    private void deleteToDosFromRepository() {
+        toDoRepository.deleteAll(toDos);
     }
 
 }
