@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Given ToDoController is called")
+@DisplayName("Given ToDoController,")
 public class ToDoControllerTest {
 
     @Mock
@@ -41,7 +41,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("when getting ToDos, then ACCEPTED")
+    @DisplayName("When ToDos, Then ACCEPTED")
     void getToDos_Accepted() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(toDos, HttpStatus.ACCEPTED);
         when(toDoRepository.findAll()).thenReturn(toDos);
@@ -50,7 +50,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("when no ToDos, then NOT_FOUND")
+    @DisplayName("When no ToDos, Then NOT_FOUND")
     void getAll_NotFound() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         List<ToDo> emptyList = Collections.emptyList();
@@ -60,7 +60,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("when correct id, then ACCEPTED")
+    @DisplayName("When correct id, Then ACCEPTED")
     void get_withCorrectId() {
         setToDo1IdTo_1L();
         ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(toDo1, HttpStatus.ACCEPTED);
@@ -70,7 +70,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("when no tasks, then list empty")
+    @DisplayName("When no tasks, Then empty list")
     void get_withCorrectId_andEmptyListOfTasks() {
         setToDo1IdTo_1L();
         List<Task> emptyList = Collections.emptyList();
@@ -82,7 +82,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("when getting tasks, then list has tasks")
+    @DisplayName("When Tasks, Then Tasks")
     void get_withCorrectId_andListOfTasks() {
         setToDo1IdTo_1L();
         toDo1.setTasks(returnListOfTasks());
@@ -93,7 +93,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("when incorrect id, then NOT_FOUND")
+    @DisplayName("When incorrect id, Then NOT_FOUND")
     void get_withIncorrectId() {
         Long id = 100L;
         ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -103,7 +103,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("when valid ToDo, then CREATED")
+    @DisplayName("When valid ToDo, then CREATED")
     void post() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(toDos, HttpStatus.CREATED);
         when(toDoRepository.saveAll(toDos)).thenReturn(toDos);
