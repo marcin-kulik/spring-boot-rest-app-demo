@@ -1,12 +1,12 @@
 package rest.demo;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import rest.demo.controller.ToDoController;
 import rest.demo.model.Task;
 import rest.demo.model.ToDo;
 import rest.demo.repository.ToDoRepository;
@@ -28,14 +28,11 @@ public class ToDoControllerTest {
     @Autowired
     private ToDoRepository toDoRepository;
 
-    @Autowired
-    private ToDoController toDoController;
-
     private ToDo toDo1;
     private List<ToDo> toDos;
 
     @Test
-    @DisplayName("When GET request and no ToDos, Then NOT_FOUND")
+    @DisplayName("When GET and no ToDos, Then NOT_FOUND")
     void whenNoToDos_thenNotFound() throws Exception {
 
         mockMvc.perform(get("/api/todos")
@@ -44,10 +41,11 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("When GET request and ToDos, Then ToDos returned")
+    @DisplayName("When GET and ToDos, Then ToDos")
     void whenToDos_thenSuccessfulAndReturnsToDos() throws Exception {
 
-        saveToDosInRepository();
+        createToDos();
+        toDoRepository.saveAll(toDos);
 
         mockMvc.perform(get("/api/todos")
                 .contentType("application/json"))
@@ -60,19 +58,18 @@ public class ToDoControllerTest {
                 .andExpect(jsonPath("$.[0].tasks.length()").value(0))
                 .andExpect(jsonPath("$.[1].tasks.length()").value(0));
 
-        deleteToDosFromRepository();
-    }
+        toDoRepository.deleteAll(toDos);    }
 
     @Test
-    @DisplayName("When GET request and ToDos have tasks, Then ToDos with Tasks returned")
+    @DisplayName("When GET and ToDos with Tasks, Then ToDos with Tasks")
     void whenToDosHaveTasks_thenSuccessfulAndReturnsToDosWithTasks() throws Exception {
 
-        saveToDosInRepository();
-
+        createToDos();
         Task task1 = Task.builder().name("Task 1").description("Task 1 description").build();
         Task task2 = Task.builder().name("Task 2").description("Task 2 description").build();
         List<Task> tasks = Arrays.asList(task1, task2);
-        toDo1 = ToDo.builder().tasks(tasks).build();
+        toDo1.setTasks(tasks);
+        toDoRepository.saveAll(toDos);
 
         mockMvc.perform(get("/api/todos")
                 .contentType("application/json"))
@@ -85,19 +82,12 @@ public class ToDoControllerTest {
                 .andExpect(jsonPath("$.[0].tasks.[0].name").value("Task 1"))
                 .andExpect(jsonPath("$.[0].tasks.[1].name").value("Task 2"));
 
-        deleteToDosFromRepository();
-    }
+        toDoRepository.deleteAll(toDos);    }
 
-    private void saveToDosInRepository() {
+    private void createToDos() {
         toDo1 = ToDo.builder().name("List 1").description("List 1 description").build();
         ToDo toDo2 = ToDo.builder().name("List 2").description("List 2 description").build();
         toDos = Arrays.asList(toDo1, toDo2);
-        toDoRepository.saveAll(toDos);
-    }
-
-
-    private void deleteToDosFromRepository() {
-        toDoRepository.deleteAll(toDos);
     }
 
 }
