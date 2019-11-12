@@ -18,6 +18,10 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author Marcin Kulik
+ */
+
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Given ToDoController,")
 public class ToDoControllerTest {
