@@ -13,9 +13,12 @@ import rest.demo.model.Task;
 import rest.demo.model.ToDo;
 import rest.demo.repository.ToDoRepository;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,6 +42,8 @@ public class ToDoControllerIntegrationTest {
     private ToDo toDo1;
     private List<ToDo> toDos;
     private List<Task> tasks;
+    private LocalDate date = LocalDate.now();
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Test
     @DisplayName("When GET and no ToDos, Then NOT_FOUND")
@@ -60,12 +65,18 @@ public class ToDoControllerIntegrationTest {
                 .contentType("application/json"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[0].id").value(1))
                 .andExpect(jsonPath("$.[0].name").value("List 1"))
-                .andExpect(jsonPath("$.[1].name").value("List 2"))
                 .andExpect(jsonPath("$.[0].description").value("List 1 description"))
-                .andExpect(jsonPath("$.[1].description").value("List 2 description"))
                 .andExpect(jsonPath("$.[0].tasks").isEmpty())
-                .andExpect(jsonPath("$.[1].tasks").isEmpty());
+                .andExpect(jsonPath("$.[0].createdAt").value(containsString(date.format(formatter))))
+                .andExpect(jsonPath("$.[0].updatedAt").value(containsString(date.format(formatter))))
+                .andExpect(jsonPath("$.[1].id").value(2))
+                .andExpect(jsonPath("$.[1].name").value("List 2"))
+                .andExpect(jsonPath("$.[1].description").value("List 2 description"))
+                .andExpect(jsonPath("$.[1].tasks").isEmpty())
+                .andExpect(jsonPath("$.[1].createdAt").value(containsString(date.format(formatter))))
+                .andExpect(jsonPath("$.[1].updatedAt").value(containsString(date.format(formatter))));
 
          }
 
@@ -82,12 +93,21 @@ public class ToDoControllerIntegrationTest {
                 .contentType("application/json"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[0].id").value(1))
                 .andExpect(jsonPath("$.[0].name").value("List 1"))
-                .andExpect(jsonPath("$.[1].name").value("List 2"))
                 .andExpect(jsonPath("$.[0].description").value("List 1 description"))
-                .andExpect(jsonPath("$.[1].description").value("List 2 description"))
+                .andExpect(jsonPath("$.[0].tasks.[0].id").value(1))
                 .andExpect(jsonPath("$.[0].tasks.[0].name").value("Task 1"))
-                .andExpect(jsonPath("$.[0].tasks.[1].name").value("Task 2"));
+                .andExpect(jsonPath("$.[0].tasks.[1].id").value(2))
+                .andExpect(jsonPath("$.[0].tasks.[1].name").value("Task 2"))
+                .andExpect(jsonPath("$.[0].createdAt").value(containsString(date.format(formatter))))
+                .andExpect(jsonPath("$.[0].updatedAt").value(containsString(date.format(formatter))))
+                .andExpect(jsonPath("$.[1].id").value(2))
+                .andExpect(jsonPath("$.[1].name").value("List 2"))
+                .andExpect(jsonPath("$.[1].description").value("List 2 description"))
+                .andExpect(jsonPath("$.[1].tasks").isEmpty())
+                .andExpect(jsonPath("$.[1].createdAt").value(containsString(date.format(formatter))))
+                .andExpect(jsonPath("$.[1].updatedAt").value(containsString(date.format(formatter))));
 
     }
 
@@ -106,13 +126,21 @@ public class ToDoControllerIntegrationTest {
                 MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[0].id").value(1))
                 .andExpect(jsonPath("$.[0].name").value("List 1"))
-                .andExpect(jsonPath("$.[1].name").value("List 2"))
                 .andExpect(jsonPath("$.[0].description").value("List 1 description"))
-                .andExpect(jsonPath("$.[1].description").value("List 2 description"))
+                .andExpect(jsonPath("$.[0].tasks.[0].id").value(1))
                 .andExpect(jsonPath("$.[0].tasks.[0].name").value("Task 1"))
+                .andExpect(jsonPath("$.[0].tasks.[1].id").value(2))
                 .andExpect(jsonPath("$.[0].tasks.[1].name").value("Task 2"))
-                .andExpect(jsonPath("$.[1].tasks").isEmpty());
+                .andExpect(jsonPath("$.[0].createdAt").value(containsString(date.format(formatter))))
+                .andExpect(jsonPath("$.[0].updatedAt").value(containsString(date.format(formatter))))
+                .andExpect(jsonPath("$.[1].id").value(2))
+                .andExpect(jsonPath("$.[1].name").value("List 2"))
+                .andExpect(jsonPath("$.[1].description").value("List 2 description"))
+                .andExpect(jsonPath("$.[1].tasks").isEmpty())
+                .andExpect(jsonPath("$.[1].createdAt").value(containsString(date.format(formatter))))
+                .andExpect(jsonPath("$.[1].updatedAt").value(containsString(date.format(formatter))));
     }
 
     private void createToDos() {
