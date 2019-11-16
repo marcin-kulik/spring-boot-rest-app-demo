@@ -1,6 +1,6 @@
 package rest.demo;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,8 +119,8 @@ public class ToDoControllerIntegrationTest {
         createTasks();
         toDo1.setTasks(tasks);
 
-        Gson gson = new Gson();
-        String json = gson.toJson(toDos);
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(toDos);
 
         mockMvc.perform(post("/api/todos").contentType(
                 MediaType.APPLICATION_JSON).content(json))
