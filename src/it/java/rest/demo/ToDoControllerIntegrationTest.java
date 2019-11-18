@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@DisplayName("Given ToDoController,")
+@DisplayName("Given ToDoController is called,")
 public class ToDoControllerIntegrationTest {
 
     @Autowired
@@ -46,8 +46,8 @@ public class ToDoControllerIntegrationTest {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Test
-    @DisplayName("When GET and no ToDos, Then NOT_FOUND")
-    void whenNoToDos_thenNotFound() throws Exception {
+    @DisplayName("When ToDos not retrieved, Then return NOT_FOUND")
+    void getToDos_NotFound() throws Exception {
 
         mockMvc.perform(get("/api/todos")
                 .contentType("application/json"))
@@ -55,8 +55,8 @@ public class ToDoControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("When GET and ToDos, Then ToDos")
-    void whenToDos_thenSuccessfulAndReturnsToDos() throws Exception {
+    @DisplayName("When ToDos retrieved, Then return ToDos")
+    void getToDos_Successful() throws Exception {
 
         createToDos();
         toDoRepository.saveAll(toDos);
@@ -81,8 +81,8 @@ public class ToDoControllerIntegrationTest {
          }
 
     @Test
-    @DisplayName("When GET and ToDos with Tasks, Then ToDos with Tasks")
-    void whenToDosHaveTasks_thenSuccessfulAndReturnsToDosWithTasks() throws Exception {
+    @DisplayName("When ToDos with Tasks retrieved, Then return ToDos with Tasks")
+    void getToDos_WithTasks() throws Exception {
 
         createToDos();
         createTasks();
@@ -112,8 +112,8 @@ public class ToDoControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("When POST with ToDos, Then ToDos")
-    public void whenPostingToDos_ThenSuccessfulAndReturnsToDos() throws Exception {
+    @DisplayName("When ToDos and Tasks received, Then return ToDos and Tasks")
+    public void post_ToDosAndTasks() throws Exception {
 
         createToDos();
         createTasks();

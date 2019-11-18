@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
  */
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Given ToDoController,")
+@DisplayName("Given ToDoController is called,")
 public class ToDoControllerTest {
 
     @Mock
@@ -45,7 +45,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("When ToDos, Then ACCEPTED")
+    @DisplayName("When ToDos retrieved, Then return ACCEPTED")
     void getToDos_Accepted() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(toDos, HttpStatus.ACCEPTED);
         when(toDoRepository.findAll()).thenReturn(toDos);
@@ -54,8 +54,8 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("When no ToDos, Then NOT_FOUND")
-    void getAll_NotFound() {
+    @DisplayName("When ToDos not retrieved, Then return NOT_FOUND")
+    void getToDos_NotFound() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         List<ToDo> emptyList = Collections.emptyList();
         when(toDoRepository.findAll()).thenReturn(emptyList);
@@ -64,8 +64,8 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("When correct id, Then ACCEPTED")
-    void get_withCorrectId() {
+    @DisplayName("When correct Id received, Then return ACCEPTED")
+    void get_CorrectId() {
         setToDo1IdTo_1L();
         ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(toDo1, HttpStatus.ACCEPTED);
         when(toDoRepository.findById(1L)).thenReturn(Optional.of(toDo1));
@@ -74,8 +74,18 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("When no tasks, Then empty list")
-    void get_withCorrectId_andEmptyListOfTasks() {
+    @DisplayName("When incorrect Id received, Then return NOT_FOUND")
+    void get_IncorrectId() {
+        Long id = 100L;
+        ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        when(toDoRepository.findById(id)).thenReturn(Optional.empty());
+        ResponseEntity<ToDo> actualResponse = toDoController.get(id);
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    @DisplayName("When Tasks not retrieved, Then return empty List")
+    void get_CorrectId_EmptyListOfTasks() {
         setToDo1IdTo_1L();
         List<Task> emptyList = Collections.emptyList();
         toDo1.setTasks(emptyList);
@@ -86,8 +96,8 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("When Tasks, Then Tasks")
-    void get_withCorrectId_andListOfTasks() {
+    @DisplayName("When Tasks retrieved, Then return Tasks")
+    void get_CorrectId_ListOfTasks() {
         setToDo1IdTo_1L();
         toDo1.setTasks(returnListOfTasks());
         when(toDoRepository.findById(1L)).thenReturn(Optional.of(toDo1));
@@ -97,17 +107,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("When incorrect id, Then NOT_FOUND")
-    void get_withIncorrectId() {
-        Long id = 100L;
-        ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        when(toDoRepository.findById(id)).thenReturn(Optional.empty());
-        ResponseEntity<ToDo> actualResponse = toDoController.get(id);
-        assertEquals(expectedResponse, actualResponse);
-    }
-
-    @Test
-    @DisplayName("When valid ToDo, then CREATED")
+    @DisplayName("When list of ToDos received, then return CREATED")
     void post() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(toDos, HttpStatus.CREATED);
         when(toDoRepository.saveAll(toDos)).thenReturn(toDos);
