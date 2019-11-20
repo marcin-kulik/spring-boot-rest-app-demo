@@ -56,14 +56,14 @@ public class ToDoControllerIntegrationTest {
 
     @Test
     @DisplayName("When ToDos retrieved, Then return ToDos")
-    void getToDos_Successful() throws Exception {
+    void getToDos_Accepted() throws Exception {
 
         createToDos();
         toDoRepository.saveAll(toDos);
 
         mockMvc.perform(get("/api/todos")
                 .contentType("application/json"))
-                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isAccepted())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[0].id").value(1))
                 .andExpect(jsonPath("$.[0].name").value("List 1"))
@@ -77,16 +77,13 @@ public class ToDoControllerIntegrationTest {
                 .andExpect(jsonPath("$.[1].tasks").isEmpty())
                 .andExpect(jsonPath("$.[1].createdAt").value(containsString(date.format(formatter))))
                 .andExpect(jsonPath("$.[1].updatedAt").value(containsString(date.format(formatter))));
-
          }
 
     @Test
     @DisplayName("When ToDos with Tasks retrieved, Then return ToDos with Tasks")
     void getToDos_WithTasks() throws Exception {
 
-        createToDos();
-        createTasks();
-        toDo1.setTasks(tasks);
+        createToDosAndTasks();
         toDoRepository.saveAll(toDos);
 
         mockMvc.perform(get("/api/todos")
@@ -108,17 +105,72 @@ public class ToDoControllerIntegrationTest {
                 .andExpect(jsonPath("$.[1].tasks").isEmpty())
                 .andExpect(jsonPath("$.[1].createdAt").value(containsString(date.format(formatter))))
                 .andExpect(jsonPath("$.[1].updatedAt").value(containsString(date.format(formatter))));
+    }
 
+    @Test
+    @DisplayName("When incorrect Id received, Then return NOT_FOUND")
+    void get_IncorrectId() throws Exception{
+
+        mockMvc.perform(get("/api/todos/1")
+                .contentType("application/json"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("When correct Id received, Then return ACCEPTED")
+    public void get_CorrectId() throws Exception {
+
+        createToDos();
+        toDoRepository.saveAll(toDos);
+
+        mockMvc.perform(get("/api/todos/1")
+                .contentType("application/json"))
+                .andExpect(status().isAccepted());
+    }
+
+    @Test
+    @DisplayName("When Tasks not retrieved, Then return empty List")
+    void get_CorrectId_EmptyListOfTasks() throws Exception {
+
+        createToDos();
+        toDoRepository.saveAll(toDos);
+
+        mockMvc.perform(get("/api/todos/1")
+                .contentType("application/json"))
+                .andExpect(status().isAccepted())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("List 1"))
+                .andExpect(jsonPath("$.description").value("List 1 description"))
+                .andExpect(jsonPath("$.tasks").isEmpty());
+    }
+
+    @Test
+    @DisplayName("When Tasks retrieved, Then return Tasks")
+    void get_CorrectId_ListOfTasks() throws Exception {
+
+        createToDosAndTasks();
+        toDoRepository.saveAll(toDos);
+
+        mockMvc.perform(get("/api/todos/1")
+                .contentType("application/json"))
+                .andExpect(status().isAccepted())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("List 1"))
+                .andExpect(jsonPath("$.description").value("List 1 description"))
+                .andExpect(jsonPath("$.tasks").isNotEmpty())
+                .andExpect(jsonPath("$.tasks.[0].id").value(1))
+                .andExpect(jsonPath("$.tasks.[0].name").value("Task 1"))
+                .andExpect(jsonPath("$.tasks.[1].id").value(2))
+                .andExpect(jsonPath("$.tasks.[1].name").value("Task 2"));
     }
 
     @Test
     @DisplayName("When ToDos and Tasks received, Then return ToDos and Tasks")
     public void post_ToDosAndTasks() throws Exception {
 
-        createToDos();
-        createTasks();
-        toDo1.setTasks(tasks);
-
+        createToDosAndTasks();
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(toDos);
 
@@ -153,6 +205,12 @@ public class ToDoControllerIntegrationTest {
         Task task1 = Task.builder().name("Task 1").description("Task 1 description").build();
         Task task2 = Task.builder().name("Task 2").description("Task 2 description").build();
         tasks = Arrays.asList(task1, task2);
+    }
+
+    private void createToDosAndTasks() {
+        createToDos();
+        createTasks();
+        toDo1.setTasks(tasks);
     }
 
 }

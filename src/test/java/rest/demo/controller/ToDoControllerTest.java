@@ -45,15 +45,6 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("When ToDos retrieved, Then return ACCEPTED")
-    void getToDos_Accepted() {
-        ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(toDos, HttpStatus.ACCEPTED);
-        when(toDoRepository.findAll()).thenReturn(toDos);
-        ResponseEntity<List<ToDo>> actualResponse = toDoController.getToDos();
-        assertEquals(expectedResponse, actualResponse);
-    }
-
-    @Test
     @DisplayName("When ToDos not retrieved, Then return NOT_FOUND")
     void getToDos_NotFound() {
         ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -64,13 +55,23 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("When correct Id received, Then return ACCEPTED")
-    void get_CorrectId() {
-        setToDo1IdTo_1L();
-        ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(toDo1, HttpStatus.ACCEPTED);
-        when(toDoRepository.findById(1L)).thenReturn(Optional.of(toDo1));
-        ResponseEntity<ToDo> actualResponse = toDoController.get(1L);
+    @DisplayName("When ToDos retrieved, Then return ACCEPTED")
+    void getToDos_Accepted() {
+        ResponseEntity<List<ToDo>> expectedResponse = new ResponseEntity<>(toDos, HttpStatus.ACCEPTED);
+        when(toDoRepository.findAll()).thenReturn(toDos);
+        ResponseEntity<List<ToDo>> actualResponse = toDoController.getToDos();
         assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    @DisplayName("When ToDos with Tasks retrieved, Then return ToDos with Tasks")
+    void getToDos_WithTasks(){
+        setToDo1IdTo_1L();
+        toDo1.setTasks(createTasks());
+        when(toDoRepository.findAll()).thenReturn(toDos);
+        ResponseEntity<List<ToDo>> controllerResponse = toDoController.getToDos();
+        List<Task> actualList = controllerResponse.getBody().get(0).getTasks();
+        assertEquals(createTasks(), actualList);
     }
 
     @Test
@@ -80,6 +81,16 @@ public class ToDoControllerTest {
         ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         when(toDoRepository.findById(id)).thenReturn(Optional.empty());
         ResponseEntity<ToDo> actualResponse = toDoController.get(id);
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    @DisplayName("When correct Id received, Then return ACCEPTED")
+    void get_CorrectId() {
+        setToDo1IdTo_1L();
+        ResponseEntity<ToDo> expectedResponse = new ResponseEntity<>(toDo1, HttpStatus.ACCEPTED);
+        when(toDoRepository.findById(1L)).thenReturn(Optional.of(toDo1));
+        ResponseEntity<ToDo> actualResponse = toDoController.get(1L);
         assertEquals(expectedResponse, actualResponse);
     }
 
@@ -99,11 +110,11 @@ public class ToDoControllerTest {
     @DisplayName("When Tasks retrieved, Then return Tasks")
     void get_CorrectId_ListOfTasks() {
         setToDo1IdTo_1L();
-        toDo1.setTasks(returnListOfTasks());
+        toDo1.setTasks(createTasks());
         when(toDoRepository.findById(1L)).thenReturn(Optional.of(toDo1));
         ResponseEntity<ToDo> controllerResponse = toDoController.get(1L);
         List<Task> actualList = Objects.requireNonNull(controllerResponse.getBody()).getTasks();
-        assertEquals(returnListOfTasks(), actualList);
+        assertEquals(createTasks(), actualList);
     }
 
     @Test
@@ -120,7 +131,7 @@ public class ToDoControllerTest {
         toDo1.setId(id);
     }
 
-    private List<Task> returnListOfTasks(){
+    private List<Task> createTasks(){
         Task task1 = Task.builder().name("Task 1").description("Task 1 description").build();
         Task task2 = Task.builder().name("Task 2").description("Task 2 description").build();
         return Arrays.asList(task1, task2);
